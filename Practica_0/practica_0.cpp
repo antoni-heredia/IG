@@ -47,19 +47,33 @@ void Poligono_Hueco (float v[][3], int n)
 		for (i=0;i<n;i++) glVertex3f(v[i][0],v[i][1],v[i][2]);
 	glEnd();
 }
+
+void circulo (GLfloat radio, GLfloat cx, GLfloat cy, GLint n, GLenum modo)
+{
+	int i;
+	if (modo==GL_LINE) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	else if (modo==GL_FILL) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	else glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+	
+	glBegin( GL_POLYGON );
+	
+	for (i=0;i<n;i++)
+		glVertex2f( cx+radio*cos(2.0*M_PI*i/n), cy+radio*sin(2.0*M_PI*i/n));
+	
+	glEnd();
+}
+
 float cara_monigote[4][3]={{-0.2,0.0,0.0},{0.2,0.0,0.0},{0.2,0.55,0.0},{-0.2,0.55,0.0}};
 float ala_sombrero[4][3] = {{-0.4, 0.55, 0.0},{0.4, 0.55, 0.0}, {0.4, 0.6, 0.0},{-0.4, 0.6, 0.0}};
 float sombrero[4][3] = {{-0.22, 0.6, 0.0},{0.22, 0.6, 0.0}, {0.22, 0.8, 0.0},{-0.22, 0.8, 0.0}};
 float oreja_izquierda[4][3] ={{-0.27,0.2,0.0},{-0.2,0.2,0.0},{-0.2,0.35,0.0},{-0.27,0.35,0.0}};
 float oreja_derecha[4][3] ={{0.2,0.2,0.0},{0.27,0.2,0.0},{0.27,0.35,0.0},{0.2,0.35,0.0}};
-
-float ojo_izquierda[4][3] = {{-0.17,0.34,0.0},{-0.07,0.34,0.0},{-0.07,0.44,0.0},{-0.17,0.44,0.0}};
-float ojo_derecha[4][3] = {{0.07,0.34,0.0},{0.17,0.34,0.0},{0.17,0.44,0.0},{0.07,0.44,0.0}};
-
-float nariz[3][3] = {{-0.07,0.21,0.0},{0.07,0.21,0.0},{0,0.27,0.0}};
+float boca[4][3] = {{-0.08,0.05,0.0},{0.08,0.05,0.0},{0.08,0.13,0.0},{-0.08,0.13,0.0}};
+float nariz[3][3] = {{-0.07,0.18,0.0},{0.07,0.18,0.0},{0,0.3,0.0}};
 void Monigote ()
 {
 
+	//pagina web para transformar rgb to glcolor https://openglcolor.mpeters.me/
 
 	// cara
    	glLineWidth(1);
@@ -78,15 +92,26 @@ void Monigote ()
 	Poligono_Solido(sombrero,4);
 
 	//Ojos
-	glColor3f(0.0,0.0,0.0);
-	Poligono_Solido(ojo_izquierda,4);
-	Poligono_Solido(ojo_derecha,4);
+	glColor3f(0.05, 0.27, 0.63);
+	circulo(0.05,-0.12,0.39,20,GL_FILL);
+	circulo(0.05,0.12,0.39,20,GL_FILL);
+	
+	//Boca
+	glColor3f(0.78, 0.42, 0.11);
+   	Poligono_Solido(boca,4);
+	circulo(0.04,-0.08,0.09,20,GL_FILL);
+	circulo(0.04, 0.08,0.09,20,GL_FILL);
+
 	
 	//Contornos
 	glColor3f(0.0,0.0,0.);
 	Poligono_Hueco(cara_monigote,4);
 	Poligono_Hueco(oreja_izquierda,4);
 	Poligono_Hueco(oreja_derecha,4);
+	Poligono_Hueco(nariz,3);
+	circulo(0.05,-0.12,0.39,20,GL_LINE); //contorno de los ojos
+	circulo(0.05,0.12,0.39,20,GL_LINE);  //contorno de los ojos
+
 
 }
 

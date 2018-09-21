@@ -12,9 +12,9 @@ void Ejes (int width)
 {
     glLineWidth(width); // Tamaño de linea
     glBegin(GL_LINES); //El tipo de objeto qu evamos a pintar, en este caso LINEAS
-       
+
 	   //El eje de x
-		glColor3f(1.0,0.0,0.0); 
+		glColor3f(1.0,0.0,0.0);
 		glVertex3f(-1.0,0.0,0.0);
 		glVertex3f(1.0,0.0,0.0);
 
@@ -23,7 +23,7 @@ void Ejes (int width)
 		glVertex3f(0.0,-1.0,0.0);
 		glColor3f(1.0,1.0,0.0); // el ultimo color es el que coje por defecto
 		glVertex3f(0.0,1.0,0.0);
-    
+
 	glEnd();
 
 
@@ -52,6 +52,10 @@ float ala_sombrero[4][3] = {{-0.4, 0.55, 0.0},{0.4, 0.55, 0.0}, {0.4, 0.6, 0.0},
 float sombrero[4][3] = {{-0.22, 0.6, 0.0},{0.22, 0.6, 0.0}, {0.22, 0.8, 0.0},{-0.22, 0.8, 0.0}};
 float oreja_izquierda[4][3] ={{-0.27,0.2,0.0},{-0.2,0.2,0.0},{-0.2,0.35,0.0},{-0.27,0.35,0.0}};
 float oreja_derecha[4][3] ={{0.2,0.2,0.0},{0.27,0.2,0.0},{0.27,0.35,0.0},{0.2,0.35,0.0}};
+
+float ojo_izquierda[4][3] = {{-0.17,0.34,0.0},{-0.07,0.34,0.0},{-0.07,0.44,0.0},{-0.17,0.44,0.0}};
+float ojo_derecha[4][3] = {{0.07,0.34,0.0},{0.17,0.34,0.0},{0.17,0.44,0.0},{0.07,0.44,0.0}};
+
 float nariz[3][3] = {{-0.07,0.21,0.0},{0.07,0.21,0.0},{0,0.27,0.0}};
 void Monigote ()
 {
@@ -63,19 +67,26 @@ void Monigote ()
    	Poligono_Solido(cara_monigote,4);
    	Poligono_Solido(oreja_izquierda,4);
 	Poligono_Solido(oreja_derecha,4);
-	
-	glColor3f(0.2,0.8,0.0);
+
+	//Nariz
+    glColor3f(0.2,0.8,0.0);
 	Poligono_Solido(nariz,3);
 
+	//Sombrero
+	glColor3f(0.0,0.0,0.0);
+	Poligono_Solido(ala_sombrero,4);
+	Poligono_Solido(sombrero,4);
+
+	//Ojos
+	glColor3f(0.0,0.0,0.0);
+	Poligono_Solido(ojo_izquierda,4);
+	Poligono_Solido(ojo_derecha,4);
+	
+	//Contornos
 	glColor3f(0.0,0.0,0.);
 	Poligono_Hueco(cara_monigote,4);
 	Poligono_Hueco(oreja_izquierda,4);
 	Poligono_Hueco(oreja_derecha,4);
-
-	glColor3f(0.0,0.0,0.0);
-	Poligono_Solido(ala_sombrero,4);
-	glColor3f(0.0,0.0,0.0);
-	Poligono_Solido(sombrero,4);
 
 }
 
@@ -92,7 +103,7 @@ static void Reshape( int width, int height )
 {
 
     glViewport(0, 0, (GLint)width, (GLint)height); //Transforma segun los valores de la ventana actual
-    
+
     glOrtho (-1.0, 1.0,-1.0, 1.0, -10, 10.0); //para mantener los puntos cartesianos fijos
 }
 

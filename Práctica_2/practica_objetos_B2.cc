@@ -12,7 +12,7 @@
 using namespace std;
 
 // tipos
-typedef enum{CUBO, PIRAMIDE, OBJETO_PLY, ROTACION} _tipo_objeto;
+typedef enum{CUBO, PIRAMIDE, OBJETO_PLY, ROTACION,CONO} _tipo_objeto;
 _tipo_objeto t_objeto=CUBO;
 _modo   modo=POINTS;
 
@@ -33,7 +33,7 @@ _cubo cubo;
 _piramide piramide(0.85,1.3);
 _objeto_ply  ply; 
 _rotacion rotacion; 
-
+_cono cono(0.4,0.8,10);
 // _objeto_ply *ply1;
 
 
@@ -105,8 +105,8 @@ glEnd();
 
 
 //**************************************************************************
-// Funcion que dibuja los objetos
-//****************************2***********************************************
+// Funcion que dibuja los objetos_cono
+//****************************2**_cono***********************************
 
 void draw_objects()
 {
@@ -114,8 +114,10 @@ void draw_objects()
 switch (t_objeto){
 	case CUBO: cubo.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
 	case PIRAMIDE: piramide.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-        case OBJETO_PLY: ply.draw(modo,1.0,0.6,0.0,0.0,1.0,0.3,2);break;
-        case ROTACION: rotacion.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+	case OBJETO_PLY: ply.draw(modo,1.0,0.6,0.0,0.0,1.0,0.3,2);break;
+	case ROTACION: rotacion.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+	case CONO: cono.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+
 	}
 
 }
@@ -168,18 +170,21 @@ glutPostRedisplay();
 
 void normal_key(unsigned char Tecla1,int x,int y)
 {
-switch (toupper(Tecla1)){
-	case 'Q':exit(0);
-	case '1':modo=POINTS;break;
-	case '2':modo=EDGES;break;
-	case '3':modo=SOLID;break;
-	case '4':modo=SOLID_CHESS;break;
-        case 'P':t_objeto=PIRAMIDE;break;
-        case 'C':t_objeto=CUBO;break;
-        case 'O':t_objeto=OBJETO_PLY;break;	
-        case 'R':t_objeto=ROTACION;break;
+	switch (toupper(Tecla1)){
+		case 'Q':exit(0);
+		case '1':modo=POINTS;break;
+		case '2':modo=EDGES;break;
+		case '3':modo=SOLID;break;
+		case '4':modo=SOLID_CHESS;break;
+		case 'P':t_objeto=PIRAMIDE;break;
+		case 'C':t_objeto=CUBO;break;
+		case 'O':t_objeto=OBJETO_PLY;break;	
+		case 'R':t_objeto=ROTACION;break;
+		case 'G':t_objeto=CONO;break;
+
 	}
-glutPostRedisplay();
+	
+	glutPostRedisplay();
 }
 
 //***************************************************************************
@@ -195,15 +200,15 @@ glutPostRedisplay();
 void special_key(int Tecla1,int x,int y)
 {
 
-switch (Tecla1){
-	case GLUT_KEY_LEFT:Observer_angle_y--;break;
-	case GLUT_KEY_RIGHT:Observer_angle_y++;break;
-	case GLUT_KEY_UP:Observer_angle_x--;break;
-	case GLUT_KEY_DOWN:Observer_angle_x++;break;
-	case GLUT_KEY_PAGE_UP:Observer_distance*=1.2;break;
-	case GLUT_KEY_PAGE_DOWN:Observer_distance/=1.2;break;
-	}
-glutPostRedisplay();
+	switch (Tecla1){
+		case GLUT_KEY_LEFT:Observer_angle_y--;break;
+		case GLUT_KEY_RIGHT:Observer_angle_y++;break;
+		case GLUT_KEY_UP:Observer_angle_x--;break;
+		case GLUT_KEY_DOWN:Observer_angle_x++;break;
+		case GLUT_KEY_PAGE_UP:Observer_distance*=1.2;break;
+		case GLUT_KEY_PAGE_DOWN:Observer_distance/=1.2;break;
+	}	
+	glutPostRedisplay();
 }
 
 
@@ -265,7 +270,7 @@ aux.x=1.0; aux.y=1.0; aux.z=0.0;
 perfil2.push_back(aux);
 
 
-rotacion.parametros(perfil2,6);
+rotacion.parametros(perfil2,20);
 /*aux.x=1.0;aux.y=-1.4;aux.z=0.0;
 perfil2.push_back(aux);
 aux.x=1.0;aux.y=-1.1;aux.z=0.0;

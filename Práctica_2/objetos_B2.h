@@ -53,6 +53,10 @@ class _cubo: public _triangulos3D
 public:
 
 	_cubo(float tam=0.5);
+	void 	draw_aristas(float r, float g, float b, int grosor);
+	void    draw_solido(float r, float g, float b);
+	void 	draw_solido_ajedrez(float r1, float g1, float b1, float r2, float g2, float b2);
+
 };
 
 
@@ -86,10 +90,27 @@ int   parametros(char *archivo);
 class _rotacion: public _triangulos3D
 {
 public:
-       _rotacion();
+	_rotacion();
 void  parametros(vector<_vertex3f> perfil1, int num1);
 
-vector<_vertex3f> perfil; 
-int num;
+	vector<_vertex3f> perfil; 
+	int num;
 };
 
+
+//************************************************************************
+// clase objeto cono
+//************************************************************************
+
+class _cono: public _triangulos3D
+{
+private:
+	vector<_vertex3f> perfil; 
+	int num;
+	float radio;
+	float altura;
+public:
+	_cono(float radio, float altura,int num);
+	void parametros(vector<_vertex3f> perfil);
+
+};

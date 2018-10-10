@@ -67,6 +67,16 @@ void _triangulos3D::draw_solido(float r, float g, float b)
 {
 
 
+int i;
+glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+glColor3f(r,g,b);
+glBegin(GL_TRIANGLES);
+for (i=0;i<caras.size();i++){
+	glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
+	glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
+	glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
+	}
+glEnd();
 
 }
 
@@ -76,7 +86,20 @@ void _triangulos3D::draw_solido(float r, float g, float b)
 
 void _triangulos3D::draw_solido_ajedrez(float r1, float g1, float b1, float r2, float g2, float b2)
 {
+glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+glBegin(GL_TRIANGLES);
+for (int i=0;i<caras.size();i++){
 
+	if(i%2 == 0)
+		glColor3f(r1,g1,b1);
+	else
+		glColor3f(r2,g2,b2);
+	
+	glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
+	glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
+	glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
+	}
+glEnd();
 }
 
 //*************************************************************************
@@ -99,10 +122,37 @@ switch (modo){
 
 _cubo::_cubo(float tam)
 {
-//vertices
+//vertices 
+vertices.resize(8); 
+vertices[0].x=0;vertices[0].y=0;vertices[0].z=0;
+vertices[1].x=tam;vertices[1].y=0;vertices[1].z=0;
+vertices[2].x=tam;vertices[2].y=tam;vertices[2].z=0;
+vertices[3].x=0;vertices[3].y=tam;vertices[3].z=0;
+vertices[4].x=0;vertices[4].y=tam;vertices[4].z=-tam;
+vertices[5].x=tam;vertices[5].y=tam;vertices[5].z=-tam;
+vertices[6].x=tam;vertices[6].y=0;vertices[6].z=-tam;
+vertices[7].x=0;vertices[7].y=0;vertices[7].z=-tam;
 
+caras.resize(12);
+//frente
+caras[0]._0=0;caras[0]._1=1;caras[0]._2=3;
+caras[1]._0=1;caras[1]._1=2;caras[1]._2=3;
+//arriba
+caras[2]._0=3;caras[2]._1=2;caras[2]._2=4;
+caras[3]._0=2;caras[3]._1=5;caras[3]._2=4;
+//izquierda
+caras[4]._0=7;caras[4]._1=0;caras[4]._2=4;
+caras[5]._0=0;caras[5]._1=3;caras[5]._2=4;
+//derecha
+caras[6]._0=1;caras[6]._1=6;caras[6]._2=2;
+caras[7]._0=6;caras[7]._1=5;caras[7]._2=2;
+//abajo
+caras[8]._0=7;caras[8]._1=6;caras[8]._2=0;
+caras[9]._0=6;caras[9]._1=1;caras[9]._2=0;
+//detras
+caras[10]._0=7;caras[10]._1=5;caras[10]._2=6;
+caras[11]._0=7;caras[11]._1=4;caras[11]._2=5;
 
-// triangulos
 
 }
 
@@ -211,11 +261,17 @@ vertices.resize(num_aux*num);
 for (j=0;j<num;j++)
   {for (i=0;i<num_aux;i++)
      {
-      vertice_aux.x=perfil[i].x*cos(2.0*M_PI*j/(1.0*num))+
-                    perfil[i].z*sin(2.0*M_PI*j/(1.0*num));
-      vertice_aux.z=-perfil[i].x*sin(2.0*M_PI*j/(1.0*num))+
-                    perfil[i].z*cos(2.0*M_PI*j/(1.0*num));
-      vertice_aux.y=perfil[i].y;
+     if(perfil[i].x==0 && j>0){
+         vertice_aux = vertices[i];
+      }else{
+        vertice_aux.x=perfil[i].x*cos(2.0*M_PI*j/(1.0*num))+
+                            perfil[i].z*sin(2.0*M_PI*j/(1.0*num));
+
+        vertice_aux.z=-perfil[i].x*sin(2.0*M_PI*j/(1.0*num))+
+                      perfil[i].z*cos(2.0*M_PI*j/(1.0*num));
+        vertice_aux.y=perfil[i].y;
+      }
+      
       vertices[i+j*num_aux]=vertice_aux;
      }
   }
@@ -233,17 +289,124 @@ for (j=0;j<num;j++)
       cara_aux._1=i+j*num_aux;
       cara_aux._2=i+((j+1)%num)*num_aux;
       caras.push_back(cara_aux);
+    
      }
   }
      
- // tapa inferior
-if (fabs(perfil[0].x)>0.0)
-  {
-  }
- 
+  // tapa inferior
+    if (fabs(perfil[0].x)>0.0)
+    {
+      vertice_aux.x = 0;
+      vertice_aux.y = perfil[0].y;
+      vertice_aux.z = 0;
+      vertices.push_back(vertice_aux);
+      for (j=0;j<num;j++)
+      {
+        cara_aux._0=j*num_aux;
+        cara_aux._1=vertices.size()-1;
+        cara_aux._2=((j+1)%num)*num_aux;
+        caras.push_back(cara_aux);
+      }
+
+    }
  // tapa superior
  if (fabs(perfil[num_aux-1].x)>0.0)
   {
+    vertice_aux.x = 0;
+    vertice_aux.y = perfil[num_aux-1].y;
+    vertice_aux.z = 0;
+    vertices.push_back(vertice_aux);
+    for (j=0;j<num;j++)
+    {
+      cara_aux._0=(num_aux-1)+j*num_aux;
+      cara_aux._1=(vertices.size()-1);
+      cara_aux._2=(num_aux-1)+((j+1)%num)*num_aux;
+      caras.push_back(cara_aux);
+    }
+
   }
 }
 
+//************************************************************************
+// objeto por revolucion
+//************************************************************************
+
+_cono::_cono(float radio2, float altura2, int num_lados)
+{
+  num = num_lados;
+  radio = radio2;
+  altura = altura2;
+
+  vector<_vertex3f> perfil1;
+  _vertex3f aux;
+  aux.x=radio;aux.y=-altura/2;aux.z=0;
+  perfil1.push_back(aux);
+
+  aux.x=0;aux.y=altura/2;aux.z=0;
+  perfil1.push_back(aux);
+
+  parametros(perfil1);
+
+}
+
+void _cono::parametros(vector<_vertex3f> perfil)
+{
+int i,j;
+_vertex3f vertice_aux;
+_vertex3i cara_aux;
+int num_aux;
+
+// tratamiento de los vértice
+
+num_aux=perfil.size();
+vertices.resize(num_aux*num);
+for (j=0;j<num;j++)
+  {for (i=0;i<num_aux;i++)
+     {
+     if(perfil[i].x==0 && j>0){
+         vertice_aux = vertices[i];
+      }else{
+        vertice_aux.x=perfil[i].x*cos(2.0*M_PI*j/(1.0*num))+
+                            perfil[i].z*sin(2.0*M_PI*j/(1.0*num));
+
+        vertice_aux.z=-perfil[i].x*sin(2.0*M_PI*j/(1.0*num))+
+                      perfil[i].z*cos(2.0*M_PI*j/(1.0*num));
+        vertice_aux.y=perfil[i].y;
+      }
+      
+      vertices[i+j*num_aux]=vertice_aux;
+     }
+  }
+
+// tratamiento de las caras 
+
+  for (j=0;j<num;j++)
+  {
+    for (i=0;i<num_aux-1;i++){ 
+      cara_aux._0=i+1+j*num_aux;
+      cara_aux._1=i+j*num_aux;
+      cara_aux._2=i+((j+1)%num)*num_aux;
+      caras.push_back(cara_aux);
+    
+    }
+  }
+     
+   // tapa inferior
+  if (fabs(perfil[0].x)>0.0)
+  {
+    vertice_aux.x = 0;
+    vertice_aux.y = perfil[0].y;
+    vertice_aux.z = 0;
+    vertices.push_back(vertice_aux);
+    for (j=0;j<num;j++)
+    {
+      cara_aux._0=j*num_aux;
+      cara_aux._1=vertices.size()-1;
+      cara_aux._2=((j+1)%num)*num_aux;
+      caras.push_back(cara_aux);
+    }
+
+  }
+ 
+
+}

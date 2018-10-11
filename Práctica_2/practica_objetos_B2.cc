@@ -12,7 +12,7 @@
 using namespace std;
 
 // tipos
-typedef enum{CUBO, PIRAMIDE, OBJETO_PLY, ROTACION,CONO} _tipo_objeto;
+typedef enum{CUBO, PIRAMIDE, OBJETO_PLY, ROTACION, CONO, ESFERA} _tipo_objeto;
 _tipo_objeto t_objeto=CUBO;
 _modo   modo=POINTS;
 
@@ -34,6 +34,7 @@ _piramide piramide(0.85,1.3);
 _objeto_ply  ply; 
 _rotacion rotacion; 
 _cono cono(0.4,0.8,10);
+_esfera esfera(0.4,20,20);
 // _objeto_ply *ply1;
 
 
@@ -117,6 +118,7 @@ switch (t_objeto){
 	case OBJETO_PLY: ply.draw(modo,1.0,0.6,0.0,0.0,1.0,0.3,2);break;
 	case ROTACION: rotacion.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
 	case CONO: cono.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+	case ESFERA: esfera.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
 
 	}
 
@@ -181,6 +183,8 @@ void normal_key(unsigned char Tecla1,int x,int y)
 		case 'O':t_objeto=OBJETO_PLY;break;	
 		case 'R':t_objeto=ROTACION;break;
 		case 'G':t_objeto=CONO;break;
+		case 'E':t_objeto=ESFERA;break;
+
 
 	}
 	

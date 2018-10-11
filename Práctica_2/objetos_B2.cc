@@ -410,3 +410,101 @@ for (j=0;j<num;j++)
  
 
 }
+
+_esfera::_esfera(float radio2, int longitud2,int latitud2){
+
+	radio = radio2;
+	longitud = longitud2;
+	latitud = latitud2*2;
+	crearPerfil();
+	parametros();
+}
+
+void _esfera::crearPerfil(){
+	_vertex3f vertice_aux;
+	for(int i = (-latitud/4)+1; i < (latitud/4); i++){
+		vertice_aux.x = radio*cos(2*M_PI*i/latitud);
+		vertice_aux.y = radio*sin(2*M_PI*i/latitud);
+		vertice_aux.z = 0;
+		perfil.push_back(vertice_aux);
+	} 
+}
+
+void _esfera::parametros(){
+	int i,j;
+	_vertex3f vertice_aux;
+	_vertex3i cara_aux;
+	int num_aux;
+
+	// tratamiento de los vértice
+
+	num_aux=perfil.size();
+	vertices.resize(num_aux*longitud);
+	cout << " num aux: " << num_aux << endl;
+	for (j=0;j<longitud;j++)
+	{
+		for (i=0;i<num_aux;i++){
+		
+			vertice_aux.x=perfil[i].x*cos(2.0*M_PI*j/(1.0*longitud))+
+								perfil[i].z*sin(2.0*M_PI*j/(1.0*longitud));
+
+			vertice_aux.z=-perfil[i].x*sin(2.0*M_PI*j/(1.0*longitud))+
+						perfil[i].z*cos(2.0*M_PI*j/(1.0*longitud));
+			vertice_aux.y=perfil[i].y;
+			
+			
+			vertices[i+j*num_aux]=vertice_aux;
+		}
+	}
+
+	// tratamiento de las caras 
+			
+	for (j=0;j<longitud;j++)
+	{
+		for (i=0;i<num_aux-1;i++){ 
+			cara_aux._0=i+((j+1)%longitud)*num_aux;
+			cara_aux._1=i+1+((j+1)%longitud)*num_aux;
+			cara_aux._2=i+1+j*num_aux;
+			caras.push_back(cara_aux);
+			
+			cara_aux._0=i+1+j*num_aux;
+			cara_aux._1=i+j*num_aux;
+			cara_aux._2=i+((j+1)%longitud)*num_aux;
+			caras.push_back(cara_aux);
+		
+		}
+	}
+		
+	// tapa inferior
+	if (fabs(perfil[0].x)>0.0)
+	{
+		vertice_aux.x = 0;
+		vertice_aux.y = -radio;
+		vertice_aux.z = 0;
+		vertices.push_back(vertice_aux);
+		for (j=0;j<longitud;j++)
+		{
+			cara_aux._0=j*num_aux;
+			cara_aux._1=vertices.size()-1;
+			cara_aux._2=((j+1)%longitud)*num_aux;
+			caras.push_back(cara_aux);
+		}
+
+	}
+	// tapa superior
+ if (fabs(perfil[num_aux-1].x)>0.0)
+  {
+    vertice_aux.x = 0;
+    vertice_aux.y = radio;
+    vertice_aux.z = 0;
+    vertices.push_back(vertice_aux);
+    for (j=0;j<longitud;j++)
+    {
+      cara_aux._0=(num_aux-1)+j*num_aux;
+      cara_aux._1=(vertices.size()-1);
+      cara_aux._2=(num_aux-1)+((j+1)%longitud)*num_aux;
+      caras.push_back(cara_aux);
+    }
+
+  }
+}

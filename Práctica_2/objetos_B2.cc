@@ -363,16 +363,14 @@ vertices.resize(num_aux*num);
 for (j=0;j<num;j++)
   {for (i=0;i<num_aux;i++)
      {
-     if(perfil[i].x==0 && j>0){
-         vertice_aux = vertices[i];
-      }else{
+     
         vertice_aux.x=perfil[i].x*cos(2.0*M_PI*j/(1.0*num))+
                             perfil[i].z*sin(2.0*M_PI*j/(1.0*num));
 
         vertice_aux.z=-perfil[i].x*sin(2.0*M_PI*j/(1.0*num))+
                       perfil[i].z*cos(2.0*M_PI*j/(1.0*num));
         vertice_aux.y=perfil[i].y;
-      }
+      
       
       vertices[i+j*num_aux]=vertice_aux;
      }
@@ -440,7 +438,6 @@ void _esfera::parametros(){
 
 	num_aux=perfil.size();
 	vertices.resize(num_aux*longitud);
-	cout << " num aux: " << num_aux << endl;
 	for (j=0;j<longitud;j++)
 	{
 		for (i=0;i<num_aux;i++){

@@ -676,8 +676,15 @@ void _base_escavadora::draw(_modo modo, float r1, float g1, float b1, float r2, 
 
 	glPushMatrix();
 	glScalef(largo_base, altura_base, ancho_base);
+	base.brillo = brillo;
+	base.ambiente_difusa = ambiente_difusa;
+	base.especular = especular;
 	base.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 	glPopMatrix();
+	
+	rueda.brillo = brillo;
+	rueda.ambiente_difusa = ambiente_difusa;
+	rueda.especular = especular;
 
 	glPushMatrix();
 	glTranslatef(-largo_base / 2, 0.0, 0.0);
@@ -709,6 +716,10 @@ void _base_escavadora::draw(_modo modo, float r1, float g1, float b1, float r2, 
 	rueda.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 	glPopMatrix();
 
+
+	rodamiento.brillo = brillo;
+	rodamiento.ambiente_difusa = ambiente_difusa;
+	rodamiento.especular = especular;
 	glPushMatrix();
 	glTranslatef(0.0, (altura_base / 2) + (altura_rodamiento / 2), 0.0);
 	rodamiento.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
@@ -730,7 +741,10 @@ _brazo::_brazo()
 }
 
 void _brazo::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
-{
+{	
+	tramo_brazo.brillo = brillo;
+	tramo_brazo.ambiente_difusa = ambiente_difusa;
+	tramo_brazo.especular = especular;
 
 	glPushMatrix();
 	glScalef(largo_brazo, alto_brazo, ancho_brazo);
@@ -769,15 +783,28 @@ void _escavadora::draw(_modo modo, float r1, float g1, float b1, float r2, float
 {
 
 	glPushMatrix();
+	base.brillo = brillo;
+	base.ambiente_difusa = ambiente_difusa;
+	base.especular = especular;
 	base.draw(modo, 1.0, 0.01, 0.01, 0.0, 0.0, 0.0, grosor);
 
 	glRotatef(giro_base, 0, 1, 0);
+
+
+	motor.brillo = brillo;
+	motor.ambiente_difusa = ambiente_difusa;
+	motor.especular = especular;
 
 	glPushMatrix();
 	glTranslatef(0, (base.altura_base / 2) + base.altura_rodamiento + (altura_motor / 2), 0.0);
 	glScalef(base.largo_base, altura_motor, base.ancho_base);
 	motor.draw(modo, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, grosor);
 	glPopMatrix();
+
+	
+	cabina.brillo = brillo;
+	cabina.ambiente_difusa = ambiente_difusa;
+	cabina.especular = especular;
 
 	glPushMatrix();
 	glTranslatef((base.largo_base / 3), (base.altura_base / 2) + base.altura_rodamiento + (altura_cabina / 2), -(base.ancho_base / 4) - 0.01);
@@ -790,6 +817,10 @@ void _escavadora::draw(_modo modo, float r1, float g1, float b1, float r2, float
 	glTranslatef(0.4, 0, 0);
 	glPushMatrix(); //brazo entero
 
+	brazo.brillo = brillo;
+	brazo.ambiente_difusa = ambiente_difusa;
+	brazo.especular = especular;
+
 	brazo.giro_cazo = giro_cazo;
 	brazo.giro_segundo_brazo = giro_segundo_brazo;
 	brazo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
@@ -797,4 +828,103 @@ void _escavadora::draw(_modo modo, float r1, float g1, float b1, float r2, float
 	glPopMatrix(); //brazo entero
 
 	glPopMatrix();
+}
+
+
+
+_esfera::_esfera(float radio2, int longitud2,int latitud2){
+
+	radio = radio2;
+	longitud = longitud2;
+	latitud = latitud2*2;
+	crearPerfil();
+	parametros();
+}
+
+void _esfera::crearPerfil(){
+	_vertex3f vertice_aux;
+	for(int i = (-latitud/4)+1; i < (latitud/4); i++){
+		vertice_aux.x = radio*cos(2*M_PI*i/latitud);
+		vertice_aux.y = radio*sin(2*M_PI*i/latitud);
+		vertice_aux.z = 0;
+		perfil.push_back(vertice_aux);
+	} 
+}
+
+void _esfera::parametros(){
+	int i,j;
+	_vertex3f vertice_aux;
+	_vertex3i cara_aux;
+	int num_aux;
+
+	// tratamiento de los vértice
+
+	num_aux=perfil.size();
+	vertices.resize(num_aux*longitud);
+	for (j=0;j<longitud;j++)
+	{
+		for (i=0;i<num_aux;i++){
+		
+			vertice_aux.x=perfil[i].x*cos(2.0*M_PI*j/(1.0*longitud))+
+								perfil[i].z*sin(2.0*M_PI*j/(1.0*longitud));
+
+			vertice_aux.z=-perfil[i].x*sin(2.0*M_PI*j/(1.0*longitud))+
+						perfil[i].z*cos(2.0*M_PI*j/(1.0*longitud));
+			vertice_aux.y=perfil[i].y;
+			
+			
+			vertices[i+j*num_aux]=vertice_aux;
+		}
+	}
+
+	// tratamiento de las caras 
+			
+	for (j=0;j<longitud;j++)
+	{
+		for (i=0;i<num_aux-1;i++){ 
+			cara_aux._0=i+((j+1)%longitud)*num_aux;
+			cara_aux._1=i+1+((j+1)%longitud)*num_aux;
+			cara_aux._2=i+1+j*num_aux;
+			caras.push_back(cara_aux);
+			
+			cara_aux._0=i+1+j*num_aux;
+			cara_aux._1=i+j*num_aux;
+			cara_aux._2=i+((j+1)%longitud)*num_aux;
+			caras.push_back(cara_aux);
+		
+		}
+	}
+		
+	// tapa inferior
+	if (fabs(perfil[0].x)>0.0)
+	{
+		vertice_aux.x = 0;
+		vertice_aux.y = -radio;
+		vertice_aux.z = 0;
+		vertices.push_back(vertice_aux);
+		for (j=0;j<longitud;j++)
+		{
+			cara_aux._0=j*num_aux;
+			cara_aux._1=vertices.size()-1;
+			cara_aux._2=((j+1)%longitud)*num_aux;
+			caras.push_back(cara_aux);
+		}
+
+	}
+	// tapa superior
+ if (fabs(perfil[num_aux-1].x)>0.0)
+  {
+    vertice_aux.x = 0;
+    vertice_aux.y = radio;
+    vertice_aux.z = 0;
+    vertices.push_back(vertice_aux);
+    for (j=0;j<longitud;j++)
+    {
+      cara_aux._2=(num_aux-1)+j*num_aux;
+      cara_aux._1=(vertices.size()-1);
+      cara_aux._0=(num_aux-1)+((j+1)%longitud)*num_aux;
+      caras.push_back(cara_aux);
+    }
+
+  }
 }

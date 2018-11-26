@@ -233,3 +233,22 @@ class _escavadora : public _triangulos3D
     _cubo cabina;
     _brazo brazo;
 };
+
+//************************************************************************
+// clase objeto cono
+//************************************************************************
+
+class _esfera: public _triangulos3D
+{
+private:
+	vector<_vertex3f> perfil; 
+	int longitud;
+	int latitud;
+	float radio;
+	void crearPerfil();
+
+public:
+	_esfera(float radio, int longitud,int latitud);
+	void parametros();
+
+};

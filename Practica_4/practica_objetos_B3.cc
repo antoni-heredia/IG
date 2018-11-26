@@ -12,7 +12,7 @@
 using namespace std;
 
 // tipos
-typedef enum{CUBO, PIRAMIDE, OBJETO_PLY, ROTACION, ARTICULADO, ESCAVADORA} _tipo_objeto;
+typedef enum{CUBO, PIRAMIDE, OBJETO_PLY, ROTACION, ARTICULADO, ESCAVADORA, ESFERA} _tipo_objeto;
 _tipo_objeto t_objeto=CUBO;
 _modo   modo=POINTS;
 
@@ -35,7 +35,8 @@ _objeto_ply  ply;
 _rotacion rotacion; 
 _tanque tanque;
 _escavadora escavadora;
-// _objeto_ply *ply1;
+_esfera esfera(0.8,40,20);
+
 
 float angulo_luz = 30.0;
 float lAlfa = 0;
@@ -115,49 +116,84 @@ glEnd();
 
 void draw_objects()
 {
-_vertex4f ambiente(0.05375, 0.05, 0.06625, 0.82);;
-_vertex4f esp(0.332741, 0.328634, 0.346435, 0.82);
+_vertex4f ambiente_obsidiana(0.05375, 0.05, 0.06625, 0.82);;
+_vertex4f esp_obsidiana(0.332741, 0.328634, 0.346435, 0.82);
+float brillo_obsidiana = 83.2;
+
 _vertex4f ambiente_oro(0.24725, 0.2245, 0.0645, 1.0);;
 _vertex4f esp_oro(0.797357, 0.723991, 0.208006, 1.0);
+float brillo_oro = 83.2;
+
+_vertex4f ambiente_esmeralda(0.3215, 0.4745, 0.4215, 0.9);
+_vertex4f esp_esmeralda(0.633, 0.727811, 0.633, 0.55);
+
+
+float brillo_esmeralda = 76.8;
 
 switch (t_objeto){
-	case CUBO: cubo.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-	case PIRAMIDE: piramide.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-        case OBJETO_PLY:
-        ply.ambiente_difusa = ambiente_oro;
-        ply.especular = esp_oro;
-        ply.brillo = 83.2;
-        ply.draw(modo,1.0,0.6,0.0,0.0,1.0,0.3,2);break;
-        case ROTACION: rotacion.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-        case ARTICULADO: tanque.draw(modo,0.5,0.7,0.2,0.3,0.6,0.3,2);break;
-        case ESCAVADORA: escavadora.draw(modo,0.5,0.7,0.2,0.3,0.6,0.3,2);break;
+	case CUBO: 
+  cubo.ambiente_difusa = ambiente_esmeralda;
+  cubo.especular = esp_esmeralda;
+  cubo.brillo = brillo_esmeralda;
+  cubo.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;	
+  case PIRAMIDE: 
+  piramide.ambiente_difusa = ambiente_esmeralda;
+  piramide.especular = esp_esmeralda;
+  piramide.brillo = brillo_esmeralda;
+  piramide.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+  case OBJETO_PLY:
+  ply.ambiente_difusa = ambiente_esmeralda;
+  ply.especular = esp_esmeralda;
+  ply.brillo = brillo_esmeralda;
+
+  //ply.ambiente_difusa = _vertex4f(0.5,0.5,0.5,1.0);
+  //ply.especular = _vertex4f(0.5,0.5,0.5,1.0);
+  ply.brillo = 120;
+  ply.draw(modo,1.0,0.6,0.0,0.0,1.0,0.3,2);break;
+  case ROTACION: 
+  rotacion.ambiente_difusa = ambiente_esmeralda;
+  rotacion.especular = esp_esmeralda;
+  rotacion.brillo = brillo_esmeralda;
+  rotacion.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+  case ARTICULADO: 
+  tanque.ambiente_difusa = ambiente_esmeralda;
+  tanque.especular = esp_esmeralda;
+  tanque.brillo = brillo_esmeralda;
+  tanque.draw(modo,0.5,0.7,0.2,0.3,0.6,0.3,2);break;
+  case ESCAVADORA: 
+  escavadora.ambiente_difusa = ambiente_esmeralda;
+  escavadora.especular = esp_esmeralda;
+  escavadora.brillo = brillo_esmeralda;
+  escavadora.draw(modo,0.5,0.7,0.2,0.3,0.6,0.3,2);break;
+
+  case ESFERA: 
+  esfera.ambiente_difusa = ambiente_esmeralda;
+  esfera.especular = esp_esmeralda;
+  esfera.brillo = brillo_esmeralda;
+  esfera.draw(modo,0.5,0.7,0.2,0.3,0.6,0.3,2);break;
 
 	}
 
 }
-void draw_Luz1() {
-  // GLfloat luz_posicion[] = {15.0, 10.0, 15.0 ,1.0};
-  // GLfloat ambiente[] = {0.2, 0.2, 0.2 ,1.0};
-	// GLfloat difusa[] = {1.0, 1.0, 1.0, 1.0 };
-	// GLfloat especular[] = { 1.0, 1.0, 1.0, 1.0 };
-  GLfloat ambiente[] = {0.2, 0.2, 0.2 ,1.0};
-	GLfloat difusa[] = {1.0, 1.0, 1.0, 1.0 };
-	GLfloat especular[] = { 1.0, 1.0, 1.0, 1.0 };
-  GLfloat luz_posicion[] = {0.0, 15.0, 0.0 ,1.0};
-  GLfloat luz_direccion[] = {0.0, -1.0, 0.0};
-
-  glLightfv(GL_LIGHT1, GL_AMBIENT, (GLfloat *) &ambiente);
-	glLightfv(GL_LIGHT1, GL_DIFFUSE, (GLfloat *) &difusa);
-	glLightfv(GL_LIGHT1, GL_SPECULAR, (GLfloat *) &especular);
-
-  glLightfv(GL_LIGHT1, GL_POSITION, (GLfloat *) &luz_posicion);
-  glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, (GLfloat *) &luz_direccion);
-  glLightfv(GL_LIGHT1, GL_SPOT_CUTOFF, (GLfloat *) &angulo_luz);
-
-  glDisable(GL_LIGHT0);
-  glDisable(GL_LIGHT2);
+void luces(float alfa){
+  GLfloat light_position[4] = {0,20,0,1},
+          light1_position[4]={0,20,0,1},
+          lightl_ambient[4]={0.1,0.0,0.0,1},
+          lightl_intensity[4]={1.0,0.4,0.4,1};
+  
   glEnable(GL_LIGHT1);
-}
+  glEnable(GL_LIGHT0);
+
+  glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+  glLightfv(GL_LIGHT1, GL_AMBIENT, lightl_ambient);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, lightl_intensity);
+	glLightfv(GL_LIGHT1, GL_SPECULAR, lightl_intensity);
+
+  glPushMatrix();
+    glRotatef(alfa,0,1,0);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+  glPopMatrix();
+};
 
 void draw_Luz2() {
   GLfloat luz_posicion[] = {15.0, 10.0, 15.0 ,1.0};
@@ -239,6 +275,8 @@ switch (toupper(Tecla1)){
   case 'R':t_objeto=ROTACION;break;
   case 'A':t_objeto=ARTICULADO;break;
   case 'E':t_objeto=ESCAVADORA;break;
+  case 'T':t_objeto=ESFERA;break;
+
 
 	}
 glutPostRedisplay();

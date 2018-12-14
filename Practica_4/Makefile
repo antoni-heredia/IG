@@ -6,7 +6,7 @@ TARGETS= practica_objetos_B3
 
 # banderas para el compilador (C y C++). Se indican los directorios donde se puenden
 # encontrar ficheros para incluir mediante la opcion -I
-# la opcion -g sirve para permitir la depuración
+# la opcion -g sirve para permitir la depuraciï¿½n
 #
 CFLAGS=    -g -DXWINDOWS -DSHM -I/usr/include -I.
 CXXFLAGS=  -g -DXWINDOWS -DSHM -I/usr/include -I.
@@ -15,7 +15,7 @@ CXXFLAGS=  -g -DXWINDOWS -DSHM -I/usr/include -I.
 # Se indica directorios donde encontrar las funciontecas con -L. Usando -l seguido del
 # nombre se indica la funcionteca que se desea enlazar.
 #
-LDFLAGS=  -lGL -lGLU -lglut -lsupc++ -lm -lc -lstdc++ -lpthread -L/usr/lib/nvidia-331
+LDFLAGS=  -lGL -lGLU -lX11 -lglut -lsupc++ -lm -lc -lstdc++ -lpthread -L/usr/lib/nvidia-331
 
 # definicion del compilador
 #

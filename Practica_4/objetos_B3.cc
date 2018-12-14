@@ -237,6 +237,8 @@ void _triangulos3D::draw(_modo modo, float r1, float g1, float b1, float r2, flo
 		break;
 	case SOLID_ILLUMINATED_GOURAUD:
 		draw_iluminacion_suave();
+		using namespace cimg_library;
+
 		break;
 	}
 }
@@ -681,7 +683,7 @@ void _base_escavadora::draw(_modo modo, float r1, float g1, float b1, float r2, 
 	base.especular = especular;
 	base.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 	glPopMatrix();
-	
+
 	rueda.brillo = brillo;
 	rueda.ambiente_difusa = ambiente_difusa;
 	rueda.especular = especular;
@@ -716,7 +718,6 @@ void _base_escavadora::draw(_modo modo, float r1, float g1, float b1, float r2, 
 	rueda.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 	glPopMatrix();
 
-
 	rodamiento.brillo = brillo;
 	rodamiento.ambiente_difusa = ambiente_difusa;
 	rodamiento.especular = especular;
@@ -741,7 +742,7 @@ _brazo::_brazo()
 }
 
 void _brazo::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
-{	
+{
 	tramo_brazo.brillo = brillo;
 	tramo_brazo.ambiente_difusa = ambiente_difusa;
 	tramo_brazo.especular = especular;
@@ -790,7 +791,6 @@ void _escavadora::draw(_modo modo, float r1, float g1, float b1, float r2, float
 
 	glRotatef(giro_base, 0, 1, 0);
 
-
 	motor.brillo = brillo;
 	motor.ambiente_difusa = ambiente_difusa;
 	motor.especular = especular;
@@ -801,7 +801,6 @@ void _escavadora::draw(_modo modo, float r1, float g1, float b1, float r2, float
 	motor.draw(modo, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, grosor);
 	glPopMatrix();
 
-	
 	cabina.brillo = brillo;
 	cabina.ambiente_difusa = ambiente_difusa;
 	cabina.especular = especular;
@@ -830,101 +829,292 @@ void _escavadora::draw(_modo modo, float r1, float g1, float b1, float r2, float
 	glPopMatrix();
 }
 
-
-
-_esfera::_esfera(float radio2, int longitud2,int latitud2){
+_esfera::_esfera(float radio2, int longitud2, int latitud2)
+{
 
 	radio = radio2;
 	longitud = longitud2;
-	latitud = latitud2*2;
+	latitud = latitud2 * 2;
 	crearPerfil();
 	parametros();
 }
 
-void _esfera::crearPerfil(){
+void _esfera::crearPerfil()
+{
 	_vertex3f vertice_aux;
-	for(int i = (-latitud/4)+1; i < (latitud/4); i++){
-		vertice_aux.x = radio*cos(2*M_PI*i/latitud);
-		vertice_aux.y = radio*sin(2*M_PI*i/latitud);
+	for (int i = (-latitud / 4) + 1; i < (latitud / 4); i++)
+	{
+		vertice_aux.x = radio * cos(2 * M_PI * i / latitud);
+		vertice_aux.y = radio * sin(2 * M_PI * i / latitud);
 		vertice_aux.z = 0;
 		perfil.push_back(vertice_aux);
-	} 
+	}
 }
 
-void _esfera::parametros(){
-	int i,j;
+void _esfera::parametros()
+{
+	int i, j;
 	_vertex3f vertice_aux;
 	_vertex3i cara_aux;
 	int num_aux;
 
 	// tratamiento de los vértice
 
-	num_aux=perfil.size();
-	vertices.resize(num_aux*longitud);
-	for (j=0;j<longitud;j++)
+	num_aux = perfil.size();
+	vertices.resize(num_aux * longitud);
+	for (j = 0; j < longitud; j++)
 	{
-		for (i=0;i<num_aux;i++){
-		
-			vertice_aux.x=perfil[i].x*cos(2.0*M_PI*j/(1.0*longitud))+
-								perfil[i].z*sin(2.0*M_PI*j/(1.0*longitud));
+		for (i = 0; i < num_aux; i++)
+		{
 
-			vertice_aux.z=-perfil[i].x*sin(2.0*M_PI*j/(1.0*longitud))+
-						perfil[i].z*cos(2.0*M_PI*j/(1.0*longitud));
-			vertice_aux.y=perfil[i].y;
-			
-			
-			vertices[i+j*num_aux]=vertice_aux;
+			vertice_aux.x = perfil[i].x * cos(2.0 * M_PI * j / (1.0 * longitud)) +
+							perfil[i].z * sin(2.0 * M_PI * j / (1.0 * longitud));
+
+			vertice_aux.z = -perfil[i].x * sin(2.0 * M_PI * j / (1.0 * longitud)) +
+							perfil[i].z * cos(2.0 * M_PI * j / (1.0 * longitud));
+			vertice_aux.y = perfil[i].y;
+
+			vertices[i + j * num_aux] = vertice_aux;
 		}
 	}
 
-	// tratamiento de las caras 
-			
-	for (j=0;j<longitud;j++)
+	// tratamiento de las caras
+
+	for (j = 0; j < longitud; j++)
 	{
-		for (i=0;i<num_aux-1;i++){ 
-			cara_aux._0=i+((j+1)%longitud)*num_aux;
-			cara_aux._1=i+1+((j+1)%longitud)*num_aux;
-			cara_aux._2=i+1+j*num_aux;
+		for (i = 0; i < num_aux - 1; i++)
+		{
+			cara_aux._0 = i + ((j + 1) % longitud) * num_aux;
+			cara_aux._1 = i + 1 + ((j + 1) % longitud) * num_aux;
+			cara_aux._2 = i + 1 + j * num_aux;
 			caras.push_back(cara_aux);
-			
-			cara_aux._0=i+1+j*num_aux;
-			cara_aux._1=i+j*num_aux;
-			cara_aux._2=i+((j+1)%longitud)*num_aux;
+
+			cara_aux._0 = i + 1 + j * num_aux;
+			cara_aux._1 = i + j * num_aux;
+			cara_aux._2 = i + ((j + 1) % longitud) * num_aux;
 			caras.push_back(cara_aux);
-		
 		}
 	}
-		
+
 	// tapa inferior
-	if (fabs(perfil[0].x)>0.0)
+	if (fabs(perfil[0].x) > 0.0)
 	{
 		vertice_aux.x = 0;
 		vertice_aux.y = -radio;
 		vertice_aux.z = 0;
 		vertices.push_back(vertice_aux);
-		for (j=0;j<longitud;j++)
+		for (j = 0; j < longitud; j++)
 		{
-			cara_aux._0=j*num_aux;
-			cara_aux._1=vertices.size()-1;
-			cara_aux._2=((j+1)%longitud)*num_aux;
+			cara_aux._0 = j * num_aux;
+			cara_aux._1 = vertices.size() - 1;
+			cara_aux._2 = ((j + 1) % longitud) * num_aux;
 			caras.push_back(cara_aux);
 		}
-
 	}
 	// tapa superior
- if (fabs(perfil[num_aux-1].x)>0.0)
-  {
-    vertice_aux.x = 0;
-    vertice_aux.y = radio;
-    vertice_aux.z = 0;
-    vertices.push_back(vertice_aux);
-    for (j=0;j<longitud;j++)
-    {
-      cara_aux._2=(num_aux-1)+j*num_aux;
-      cara_aux._1=(vertices.size()-1);
-      cara_aux._0=(num_aux-1)+((j+1)%longitud)*num_aux;
-      caras.push_back(cara_aux);
-    }
+	if (fabs(perfil[num_aux - 1].x) > 0.0)
+	{
+		vertice_aux.x = 0;
+		vertice_aux.y = radio;
+		vertice_aux.z = 0;
+		vertices.push_back(vertice_aux);
+		for (j = 0; j < longitud; j++)
+		{
+			cara_aux._2 = (num_aux - 1) + j * num_aux;
+			cara_aux._1 = (vertices.size() - 1);
+			cara_aux._0 = (num_aux - 1) + ((j + 1) % longitud) * num_aux;
+			caras.push_back(cara_aux);
+		}
+	}
+}
 
-  }
+_imagen::_imagen()
+{
+}
+
+void _imagen::Load(const char path[])
+{
+	std::vector<unsigned char> data;
+
+	CImg<unsigned char> logo;
+	logo.load(path);
+
+	// empaquetamos bien los datos
+	for (long y = 0; y < logo.height(); y++)
+		for (long x = 0; x < logo.width(); x++)
+		{
+			unsigned char *r = logo.data(x, y, 0, 0);
+			unsigned char *g = logo.data(x, y, 0, 1);
+			unsigned char *b = logo.data(x, y, 0, 2);
+			data.push_back(*r);
+			data.push_back(*g);
+			data.push_back(*b);
+		}
+
+	glGenTextures(1, &textura_id);
+	glBindTexture(GL_TEXTURE_2D, textura_id);
+
+	glActiveTexture(GL_TEXTURE0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	// TRASFIERE LOS DATOS A GPU
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, logo.width(), logo.height(),
+				 0, GL_RGB, GL_UNSIGNED_BYTE, &data[0]);
+}
+
+
+void _imagen::draw()
+{
+	GLfloat vertices[] = {
+		-0.5, 0.0, 0.5,   0.5, 0.0, 0.5,   0.5, 1.0, 0.5,  -0.5, 1.0, 0.5,
+		-0.5, 1.0, -0.5,  0.5, 1.0, -0.5,  0.5, 0.0, -0.5, -0.5, 0.0, -0.5,
+		0.5, 0.0, 0.5,   0.5, 0.0, -0.5,  0.5, 1.0, -0.5,  0.5, 1.0, 0.5,
+		-0.5, 0.0, -0.5,  -0.5, 0.0, 0.5,  -0.5, 1.0, 0.5, -0.5, 1.0, -0.5
+  };
+  GLfloat texVertices[] = {
+		0.0,0.0, 1.0,0.0, 1.0,1.0, 0.0,1.0,
+		0.0,0.0, 1.0,0.0, 1.0,1.0, 0.0,1.0,
+		0.0,0.0, 1.0,0.0, 1.0,1.0, 0.0,1.0,
+		0.0,0.0, 1.0,0.0, 1.0,1.0, 0.0,1.0
+  };
+
+   GLubyte cubeIndices[24] = {0,1,2,3, 4,5,6,7, 3,2,5,4, 7,6,1,0,
+                                  8,9,10,11, 12,13,14,15};
+   glEnable(GL_TEXTURE_2D);
+      glBindTexture(GL_TEXTURE_2D, textura_id);
+      glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      glColor3f(1.0f, 1.0f, 1.0f);
+
+      glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+      glEnableClientState(GL_VERTEX_ARRAY);
+
+      glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
+      glVertexPointer(3, GL_FLOAT, 0, vertices);
+
+      glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, cubeIndices);
+      glDisableClientState(GL_VERTEX_ARRAY);
+    glDisable(GL_TEXTURE_2D);
+}
+
+void _imagen::draw_portatil()
+{
+	GLfloat vertices[] = {	0.5,0,0, 
+							0.5,0.5,0,
+							-0.5,0.5,0,
+							-0.5,0,0,
+							-0.5,0,0.5,
+							0.5,0,0.5,
+
+
+							
+							  };
+  GLfloat texVertices[] = {	1,0.5,
+  						   	1,0,
+							0,0,
+							0,0.5,
+							0,1,
+							1,1};
+GLubyte cubeIndices[8] = {	0,1,2,3,
+							0,3,4,5
+							};
+
+   glEnable(GL_TEXTURE_2D);
+      glBindTexture(GL_TEXTURE_2D, textura_id);
+      glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      glColor3f(1.0f, 1.0f, 1.0f);
+
+      glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+      glEnableClientState(GL_VERTEX_ARRAY);
+
+      glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
+      glVertexPointer(3, GL_FLOAT, 0, vertices);
+
+      glDrawElements(GL_QUADS, 8, GL_UNSIGNED_BYTE, cubeIndices);
+      glDisableClientState(GL_VERTEX_ARRAY);
+    glDisable(GL_TEXTURE_2D);
+}
+void _imagen::draw_skybox()
+{
+
+GLfloat vertices[] = { 	1,1,0, 1,1,1, 0,1,1,  0,1,0,
+								0,0,0, 0,1,1, 0,0,1,
+								1,0,0,
+								1,0,1, 1,1,1,
+								0,0,1, 0,1,1,
+								1,0,1, 0,0,1};
+
+GLfloat texVertices[] = {	0.5,0.33, 0.5,0, 0.25,0, 0.25,0.33,
+  							0.25,0.66, 0,0.33, 0,0.66,
+							0.5,0.66,
+							0.75,0.66, 0.75,0.33,
+							1,0.66, 1,0.33,
+							0.5,0.99, 0.25,0.99};
+GLubyte cubeIndices[24] = {	0,1,2,3,
+							4,3,5,6,
+							7,0,3,4,
+							8,9,0,7,
+							10,11,9,8,
+							12,7,4,13};
+
+   glEnable(GL_TEXTURE_2D);
+      glBindTexture(GL_TEXTURE_2D, textura_id);
+      glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      glColor3f(1.0f, 1.0f, 1.0f);
+
+      glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+      glEnableClientState(GL_VERTEX_ARRAY);
+
+      glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
+      glVertexPointer(3, GL_FLOAT, 0, vertices);
+
+      glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, cubeIndices);
+      glDisableClientState(GL_VERTEX_ARRAY);
+    glDisable(GL_TEXTURE_2D);
+}
+
+void _imagen::draw_piramide()
+{
+
+GLfloat vertices[] = { 	0,1,0, 0.5,0,0.5,  -0.5,0,0.5,
+						0,1,0, -0.5,0,0.5,  -0.5,0,-0.5,
+						0,1,0, -0.5,0,-0.5, 0.5,0,-0.5,
+						0,1,0, 0.5,0,-0.5, -0.5,0,0.5};
+
+GLfloat texVertices[] = {	0.5,0, 0,1, 1,1,
+							0.5,0, 0,1, 1,1,
+							0.5,0, 0,1, 1,1,
+							0.5,0, 0,1, 1,1
+						};
+GLubyte cubeIndices[18] = {	0,1,2, 0,2,3, 0,3,4, 0,4,1};
+
+   glEnable(GL_TEXTURE_2D);
+      glBindTexture(GL_TEXTURE_2D, textura_id);
+      glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      glColor3f(1.0f, 1.0f, 1.0f);
+
+      glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+      glEnableClientState(GL_VERTEX_ARRAY);
+
+      glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
+      glVertexPointer(3, GL_FLOAT, 0, vertices);
+
+      glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_BYTE, cubeIndices);
+      glDisableClientState(GL_VERTEX_ARRAY);
+    glDisable(GL_TEXTURE_2D);
+}
+
+void _imagen::libera()
+{
+	glDeleteTextures(1, &textura_id);
 }

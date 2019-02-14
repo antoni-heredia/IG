@@ -185,6 +185,7 @@ void procesar_color(unsigned char color[3])
         {
         case 100:
                 i = 1;
+                cout << "Cubo grande" << endl;
                 if (modo_selec[0] == 0)
                 {
                         modo_selec[0] = 1;
@@ -197,6 +198,7 @@ void procesar_color(unsigned char color[3])
                 }
                 break;
         case 110:
+                cout << "Cubo pequeño" << endl;
                 i = 2;
                 if (modo_selec[1] == 0)
                 {
@@ -210,6 +212,8 @@ void procesar_color(unsigned char color[3])
                 }
                 break;
         case 120:
+                cout << "Piramide izquierda" << endl;
+
                 i = 3;
                 if (modo_selec[2] == 0)
                 {
@@ -224,6 +228,8 @@ void procesar_color(unsigned char color[3])
                 break;
 
         case 130:
+                cout << "Piramide derecha" << endl;
+
                 i = 4;
                 if (modo_selec[3] == 0)
                 {
@@ -567,8 +573,6 @@ void special_key(int Tecla1, int x, int y)
         }
         glutPostRedisplay();
 }
-
-
 
 //***************************************************************************
 // Funcion de incializacion

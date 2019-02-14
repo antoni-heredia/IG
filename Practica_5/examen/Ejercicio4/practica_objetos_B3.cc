@@ -1,19 +1,7 @@
 //**************************************************************************
 // Práctica 3 usando objetos
 //**************************************************************************
-/*
-void processNormalKeys(unsigned char key, int x, int y) {
 
-if (key == 27)
-    exit(0);
-else if (key=='r') {
-    int mod = glutGetModifiers();
-    if (mod == GLUT_ACTIVE_ALT)
-        //piece of code
-    else if(//...)
-        //piece of code
-}}
-*/
 #include <GL/glut.h>
 #include <ctype.h>
 #include <math.h>
@@ -63,21 +51,17 @@ float primer_giro = 0;
 float segundo_giro = 0;
 
 // objetos
-_cubo cubo;
-color cubo_color;
-vector<bool> seleccion1(12, false);
-_cubo cubo1;
-color cubo_color1;
-vector<bool> seleccion2(12, false);
 
 _piramide piramide(0.5, 1);
-color piramide_color;
-vector<bool> seleccion3(4, false);
-color piramide_color1;
-vector<bool> seleccion4(4, false);
+bool modolinea;
+bool modolinea1;
+bool modolinea2;
 
+_escena5 escena;
 _objeto_ply ply;
 _rotacion rotacion;
+_tanque tanque;
+_escavadora escavadora;
 // _objeto_ply *ply1;
 
 //**************************************************************************
@@ -194,12 +178,11 @@ void RatonMovido(int x, int y)
 
 void procesar_color(unsigned char color[3])
 {
-        int i, cara;
-        int color1 = color[0];
-        if (color1 >= 100 && color1 < 113)
+        int i;
+        switch (color[0])
         {
+        case 100:
                 i = 1;
-                cara = color1 - 100;
                 if (modo_selec[0] == 0)
                 {
                         modo_selec[0] = 1;
@@ -210,11 +193,8 @@ void procesar_color(unsigned char color[3])
                         modo_selec[0] = 0;
                         cambio = 0;
                 }
-        }
-
-        if (color1 >= 113 && color1 < 126)
-        {
-                cara = color1 - 113;
+                break;
+        case 110:
                 i = 2;
                 if (modo_selec[1] == 0)
                 {
@@ -226,11 +206,8 @@ void procesar_color(unsigned char color[3])
                         modo_selec[1] = 0;
                         cambio = 0;
                 }
-        }
-
-        if (color1 >= 126 && color1 < 136)
-        {
-                cara = color1 - 126;
+                break;
+        case 120:
                 i = 3;
                 if (modo_selec[2] == 0)
                 {
@@ -242,39 +219,26 @@ void procesar_color(unsigned char color[3])
                         modo_selec[2] = 0;
                         cambio = 0;
                 }
-        }
-
-        if (color1 >= 136 && color1 < 146)
-        {
-                cara = color1 - 136;
-                i = 4;
-                if (modo_selec[3] == 0)
-                {
-                        modo_selec[3] = 1;
-                        cambio = 1;
-                }
-                else
-                {
-                        modo_selec[3] = 0;
-                        cambio = 0;
-                }
+                break;
         }
 
         if (cambio == 1)
         {
-                switch (i)
+                 switch (i)
                 {
                 case 1:
-                        seleccion1[cara] = true;
+
+                        modolinea1 = true;
+                        modolinea2 = true;
                         break;
+                        ;
                 case 2:
-                        seleccion2[cara] = true;
+                        modolinea = true;
+                        modolinea2 = true;
                         break;
                 case 3:
-                        seleccion3[cara] = true;
-                        break;
-                case 4:
-                        seleccion4[cara] = true;
+                        modolinea1 = true;
+                        modolinea = true;
                         break;
                 }
         }
@@ -283,20 +247,18 @@ void procesar_color(unsigned char color[3])
                 switch (i)
                 {
                 case 1:
-                        seleccion1[cara] = false;
 
+                        modolinea1 = false;
+                        modolinea2 = false;
                         break;
                         ;
                 case 2:
-                        seleccion2[cara] = false;
-
+                        modolinea = false;
+                        modolinea2 = false;
                         break;
                 case 3:
-                        seleccion3[cara] = false;
-
-                        break;
-                case 4:
-                        seleccion4[cara] = false;
+                        modolinea1 = false;
+                        modolinea = false;
                         break;
                 }
         }
@@ -348,48 +310,37 @@ void draw_axis()
 void draw_objects()
 {
         glPushMatrix();
-        cubo.draw(EDGES, 0, 0, 1, 0.0, 0.0, 0.0, 1,seleccion1);
-        cubo.draw(SOLID, 0.9,0.6,0.2, 0.0, 0.0, 0.0, 1,seleccion1) ;
-        glRotatef(primer_giro, 0, 1, 0);
+        piramide.draw(EDGES, 0, 0, 1, 0.0, 0.0, 0.0, 1);
+        if(modolinea == false)
+                piramide.draw(SOLID, 0.9, 0.3, 0.9, 0.0, 0.0, 0.0, 1);
+
         glPushMatrix();
-        glTranslatef(0.5, 0.75, 0.0);
-        glScalef(0.75, 0.5, 0.5);
-        cubo.draw(EDGES, 0, 0, 1, 0.0, 0.0, 0.0, 1,seleccion2);
-        cubo.draw(SOLID,  0.9, 0.6, 0.2, 0.0, 0.0, 0.0, 1, seleccion2);
+        glTranslatef(1, 0, 0.0);
+        piramide.draw(EDGES, 0, 0, 1, 0.0, 0.0, 0.0, 1);
+        if(modolinea1 == false)
+                piramide.draw(SOLID, 0.9, 0.3, 0.9, 0.0, 0.0, 0.0, 1);
         glPopMatrix();
         glPushMatrix();
-        glRotatef(90, 0, 0, 1);
-        glTranslatef(0, 0.5, 0.0);
-        piramide.draw(EDGES, 0, 0, 1, 0.0, 0.0, 0.0, 1,seleccion3);
-        piramide.draw(SOLID,0.9, 0.6, 0.2, 0.0, 0.0, 0.0, 1,seleccion3);
-        glPopMatrix();
-        glPushMatrix();
-        glRotatef(-90, 0, 0, 1);
-        glTranslatef(0, 0.5, 0.0);
-        piramide.draw(EDGES, 0, 0, 1, 0.0, 0.0, 0.0, 1,seleccion4);
-        piramide.draw(SOLID,0.9, 0.6, 0.2, 0.0, 0.0, 0.0, 1,seleccion4);
+        glTranslatef(-1, 0, 0.0);
+        piramide.draw(EDGES, 0, 0, 1, 0.0, 0.0, 0.0, 1);
+        if(modolinea2 == false)
+                piramide.draw(SOLID, 0.9, 0.3, 0.9, 0.0, 0.0, 0.0, 1);
         glPopMatrix();
         glPopMatrix();
 }
 void draw_objects_seleccion()
 {
+
         glPushMatrix();
-        cubo.draw_seleccion_color(100, 100, 100);
-        glRotatef(primer_giro, 0, 1, 0);
+        piramide.draw_seleccion_color(100, 100, 100);
+
         glPushMatrix();
-        glTranslatef(0.5, 0.75, 0.0);
-        glScalef(0.75, 0.5, 0.5);
-        cubo.draw_seleccion_color(113, 110, 110);
+        glTranslatef(1, 0, 0.0);
+        piramide.draw_seleccion_color(110, 110, 110);
         glPopMatrix();
         glPushMatrix();
-        glRotatef(90, 0, 0, 1);
-        glTranslatef(0, 0.5, 0.0);
-        piramide.draw_seleccion_color(126, 120, 120);
-        glPopMatrix();
-        glPushMatrix();
-        glRotatef(-90, 0, 0, 1);
-        glTranslatef(0, 0.5, 0.0);
-        piramide.draw_seleccion_color(136, 130, 130);
+        glTranslatef(-1, 0, 0.0);
+        piramide.draw_seleccion_color(120, 120, 120);
         glPopMatrix();
         glPopMatrix();
 }
@@ -552,17 +503,25 @@ void special_key(int Tecla1, int x, int y)
                 break;
         case GLUT_KEY_F3:
                 primer_giro++;
+                tanque.giro_torreta += 5;
+                escavadora.giro_base += 5;
                 break;
         case GLUT_KEY_F4:
                 primer_giro--;
+                tanque.giro_torreta -= 5;
+                escavadora.giro_base -= 5;
                 break;
         case GLUT_KEY_F5:
+                escavadora.giro_primer_brazo += 1;
                 break;
         case GLUT_KEY_F6:
+                escavadora.giro_primer_brazo -= 1;
                 break;
         case GLUT_KEY_F7:
+                escavadora.giro_segundo_brazo += 1;
                 break;
         case GLUT_KEY_F8:
+                escavadora.giro_segundo_brazo -= 1;
                 break;
         }
         glutPostRedisplay();
@@ -583,18 +542,9 @@ void initialize(void)
         Size_y = 0.5;
         Front_plane = 1;
         Back_plane = 1000;
-        cubo_color.r = 0.9;
-        cubo_color.g = 0.6;
-        cubo_color.b = 0.2;
-        cubo_color1.r = 0.9;
-        cubo_color1.g = 0.6;
-        cubo_color1.b = 0.2;
-        piramide_color.r = 0.9;
-        piramide_color.g = 0.6;
-        piramide_color.b = 0.2;
-        piramide_color1.r = 0.9;
-        piramide_color1.g = 0.6;
-        piramide_color1.b = 0.2;
+        modolinea = false;
+        modolinea1 = false;
+        modolinea2 = false;
         // se incia la posicion del observador, en el eje z
         Observer_distance = 3 * Front_plane;
         Observer_angle_x = 0;
